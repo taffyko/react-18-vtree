@@ -19,7 +19,7 @@ jobs:
       - run: yarn build
       - run: yarn deploy-storybook --ci
         env:
-          GH_TOKEN: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: CodeReinvented:${{ secrets.GITHUB_TOKEN }}
 # Uncomment to enable auto publishing to npm
 
 #  publish-npm:
