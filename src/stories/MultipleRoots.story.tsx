@@ -1,7 +1,6 @@
 /* eslint-disable max-depth */
-import {number, withKnobs} from '@storybook/addon-knobs';
-import {storiesOf} from '@storybook/react';
-import React, {FC} from 'react';
+import { storiesOf } from '@storybook/react';
+import React, { FC } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
   FixedSizeNodeData,
@@ -9,16 +8,12 @@ import {
   FixedSizeTree,
   TreeWalker,
   TreeWalkerValue,
-} from '../src';
-import {NodeComponentProps} from '../src/Tree';
+} from '..';
+import { NodeComponentProps } from '../Tree';
 
 document.body.style.margin = '0';
 document.body.style.display = 'flex';
 document.body.style.minHeight = '100vh';
-
-const root = document.getElementById('root')!;
-root.style.margin = '10px 0 0 10px';
-root.style.flex = '1';
 
 type TreeNode = Readonly<{
   children: TreeNode[];
@@ -56,8 +51,8 @@ const createNode = (depth: number = 0): TreeNode => {
 };
 
 const rootNode = createNode();
-const defaultTextStyle = {marginLeft: 10};
-const defaultButtonStyle = {fontFamily: 'Courier New'};
+const defaultTextStyle = { marginLeft: 10 };
+const defaultButtonStyle = { fontFamily: 'Courier New' };
 
 type NodeMeta = Readonly<{
   nestingLevel: number;
@@ -66,7 +61,7 @@ type NodeMeta = Readonly<{
 
 const getNodeData = (
   node: TreeNode,
-  nestingLevel: number,
+  nestingLevel: number
 ): TreeWalkerValue<TreeData, NodeMeta> => ({
   data: {
     id: node.id.toString(),
@@ -80,7 +75,10 @@ const getNodeData = (
 });
 
 function* treeWalker(): ReturnType<TreeWalker<TreeData, NodeMeta>> {
-  yield getNodeData(rootNode, 0);
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of
+  for (let i = 0; i < rootNode.children.length; i++) {
+    yield getNodeData(rootNode.children[i], 0);
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   while (true) {
@@ -90,16 +88,15 @@ function* treeWalker(): ReturnType<TreeWalker<TreeData, NodeMeta>> {
     for (let i = 0; i < parentMeta.node.children.length; i++) {
       yield getNodeData(
         parentMeta.node.children[i],
-        parentMeta.nestingLevel + 1,
+        parentMeta.nestingLevel + 1
       );
     }
   }
 }
 
-const Node: FC<NodeComponentProps<
-  TreeData,
-  FixedSizeNodePublicState<TreeData>
->> = ({data: {isLeaf, name, nestingLevel}, isOpen, style, setOpen}) => (
+const Node: FC<
+  NodeComponentProps<TreeData, FixedSizeNodePublicState<TreeData>>
+> = ({ data: { isLeaf, name, nestingLevel }, isOpen, style, setOpen }) => (
   <div
     style={{
       ...style,
@@ -127,9 +124,9 @@ type TreePresenterProps = Readonly<{
   itemSize: number;
 }>;
 
-const TreePresenter: FC<TreePresenterProps> = ({itemSize}) => (
+const TreePresenter: FC<TreePresenterProps> = ({ itemSize }) => (
   <AutoSizer disableWidth>
-    {({height}) => (
+    {({ height }) => (
       <FixedSizeTree
         treeWalker={treeWalker}
         itemSize={itemSize}
@@ -142,8 +139,6 @@ const TreePresenter: FC<TreePresenterProps> = ({itemSize}) => (
   </AutoSizer>
 );
 
-storiesOf('Tree', module)
-  .addDecorator(withKnobs)
-  .add('FixedSizeTree', () => (
-    <TreePresenter itemSize={number('Row height', 30)} />
-  ));
+storiesOf('Tree', module).add('Multiple Tree roots', () => (
+  <TreePresenter itemSize={30} />
+));

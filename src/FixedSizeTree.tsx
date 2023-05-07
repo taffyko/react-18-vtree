@@ -1,5 +1,5 @@
-import React, {ReactNode} from 'react';
-import {FixedSizeList, FixedSizeListProps} from 'react-window';
+import React, { ReactNode } from 'react';
+import { FixedSizeList, FixedSizeListProps } from 'react-window';
 import Tree, {
   createTreeComputer,
   NodeData,
@@ -7,13 +7,12 @@ import Tree, {
   TreeProps,
   TreeState,
 } from './Tree';
-import {createBasicRecord, getIdByIndex} from './utils';
+import { createBasicRecord, getIdByIndex } from './utils';
 
 export type FixedSizeNodeData = NodeData;
 
-export type FixedSizeNodePublicState<
-  TData extends FixedSizeNodeData
-> = NodePublicState<TData>;
+export type FixedSizeNodePublicState<TData extends FixedSizeNodeData> =
+  NodePublicState<TData>;
 
 export type FixedSizeTreeProps<TData extends FixedSizeNodeData> = TreeProps<
   TData,
@@ -34,7 +33,7 @@ const computeTree = createTreeComputer<
   FixedSizeTreeProps<FixedSizeNodeData>,
   FixedSizeTreeState<FixedSizeNodeData>
 >({
-  createRecord: (data, {recomputeTree}, parent, previousRecord) =>
+  createRecord: (data, { recomputeTree }, parent, previousRecord) =>
     createBasicRecord(
       {
         data,
@@ -46,7 +45,7 @@ const computeTree = createTreeComputer<
             [data.id]: state,
           }),
       },
-      parent,
+      parent
     ),
 });
 
@@ -69,16 +68,9 @@ export class FixedSizeTree<
   }
 
   public render(): ReactNode {
-    const {
-      children,
-      listRef,
-      placeholder,
-      treeWalker,
-      rowComponent,
-      ...rest
-    } = this.props;
+    const { placeholder, rowComponent, ...rest } = this.props;
 
-    const {attachRefs, order} = this.state;
+    const { attachRefs, order } = this.state;
 
     return placeholder && order!.length === 0 ? (
       placeholder

@@ -1,7 +1,6 @@
 /* eslint-disable max-depth */
-import {boolean, number, withKnobs} from '@storybook/addon-knobs';
-import {storiesOf} from '@storybook/react';
-import React, {FC, useCallback, useMemo, useRef, useState} from 'react';
+import { storiesOf } from '@storybook/react';
+import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
   FixedSizeNodeData,
@@ -9,17 +8,13 @@ import {
   FixedSizeTree,
   TreeWalker,
   TreeWalkerValue,
-} from '../src';
-import {NodeComponentProps} from '../src/Tree';
-import {AsyncTaskScheduler} from './utils';
+} from '..';
+import { NodeComponentProps } from '../Tree';
+import { AsyncTaskScheduler } from './utils';
 
 document.body.style.margin = '0';
 document.body.style.display = 'flex';
 document.body.style.minHeight = '100vh';
-
-const root = document.getElementById('root')!;
-root.style.margin = '10px 0 0 10px';
-root.style.flex = '1';
 
 type TreeNode = Readonly<{
   children: TreeNode[];
@@ -30,8 +25,8 @@ type TreeNode = Readonly<{
 
 type TreeData = FixedSizeNodeData &
   Readonly<{
-    downloaded: boolean;
     download: () => Promise<void>;
+    downloaded: boolean;
     isLeaf: boolean;
     name: string;
     nestingLevel: number;
@@ -41,7 +36,7 @@ let nodeId = 0;
 
 const createNode = (
   downloadedIds: readonly number[],
-  depth: number = 0,
+  depth: number = 0
 ): TreeNode => {
   const id = nodeId;
   const node: TreeNode = {
@@ -64,8 +59,8 @@ const createNode = (
   return node;
 };
 
-const defaultTextStyle = {marginLeft: 10};
-const defaultButtonStyle = {fontFamily: 'Courier New'};
+const defaultTextStyle = { marginLeft: 10 };
+const defaultButtonStyle = { fontFamily: 'Courier New' };
 
 type NodeMeta = Readonly<{
   nestingLevel: number;
@@ -75,7 +70,7 @@ type NodeMeta = Readonly<{
 const getNodeData = (
   node: TreeNode,
   nestingLevel: number,
-  download: () => Promise<void>,
+  download: () => Promise<void>
 ): TreeWalkerValue<TreeData, NodeMeta> => ({
   data: {
     download,
@@ -90,11 +85,10 @@ const getNodeData = (
   node,
 });
 
-const Node: FC<NodeComponentProps<
-  TreeData,
-  FixedSizeNodePublicState<TreeData>
->> = ({
-  data: {download, downloaded, isLeaf, name, nestingLevel},
+const Node: FC<
+  NodeComponentProps<TreeData, FixedSizeNodePublicState<TreeData>>
+> = ({
+  data: { download, downloaded, isLeaf, name, nestingLevel },
   isOpen,
   style,
   setOpen,
@@ -140,12 +134,12 @@ type TreePresenterProps = Readonly<{
   itemSize: number;
 }>;
 
-const TreePresenter: FC<TreePresenterProps> = ({disableAsync, itemSize}) => {
+const TreePresenter: FC<TreePresenterProps> = ({ disableAsync, itemSize }) => {
   const [downloadedIds, setDownloadedIds] = useState<readonly number[]>([]);
   const scheduler = useRef<AsyncTaskScheduler<number>>(
     new AsyncTaskScheduler((ids) => {
       setDownloadedIds(ids);
-    }),
+    })
   );
   const rootNode = useMemo(() => {
     nodeId = 0;
@@ -176,18 +170,18 @@ const TreePresenter: FC<TreePresenterProps> = ({disableAsync, itemSize}) => {
             yield getNodeData(
               parentMeta.node.children[i],
               parentMeta.nestingLevel + 1,
-              createDownloader(parentMeta.node.children[i]),
+              createDownloader(parentMeta.node.children[i])
             );
           }
         }
       }
     },
-    [rootNode],
+    [rootNode]
   );
 
   return (
     <AutoSizer disableWidth>
-      {({height}) => (
+      {({ height }) => (
         <FixedSizeTree
           treeWalker={treeWalker}
           itemSize={itemSize}
@@ -202,11 +196,6 @@ const TreePresenter: FC<TreePresenterProps> = ({disableAsync, itemSize}) => {
   );
 };
 
-storiesOf('Tree', module)
-  .addDecorator(withKnobs)
-  .add('Async data', () => (
-    <TreePresenter
-      disableAsync={boolean('Disable async', false)}
-      itemSize={number('Row height', 30)}
-    />
-  ));
+storiesOf('Tree', module).add('Async data', () => (
+  <TreePresenter disableAsync={false} itemSize={30} />
+));

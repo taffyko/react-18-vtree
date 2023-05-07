@@ -2,7 +2,9 @@ export type AsyncTaskSchedulerFinalizeCallback<T> = (ids: readonly T[]) => void;
 
 export class AsyncTaskScheduler<T> {
   private readonly aborters: Set<() => void> = new Set();
+
   private readonly finalizeCallback: AsyncTaskSchedulerFinalizeCallback<T>;
+
   private readonly tasks: Map<T, () => void> = new Map();
 
   public constructor(finalizeCallback: AsyncTaskSchedulerFinalizeCallback<T>) {

@@ -1,108 +1,150 @@
 {
-  "name": "react-vtree",
-  "version": "3.0.0-beta.3",
-  "description": "React component for efficiently rendering large tree structures",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/es/index.js",
-  "typings": "./dist/es/index.d.ts",
+  "name": "tsup-react-package-starter",
+  "description": "",
+  "version": "0.0.0",
+  "author": "",
+  "license": "",
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "dev": "concurrently \"yarn build --watch\" \"yarn storybook\" \"yarn test:watch\" ",
+    "build": "tsup --onSuccess \"yarn yalc publish\"",
+    "type-check": "tsc",
+    "lint": "eslint --ignore-path .gitignore \"{src,tests}/**/*.+(ts|js|tsx)\"",
+    "lint:fix": "yarn lint --fix && prettier --write .",
+    "test": "jest --coverage --passWithNoTests",
+    "test:ci": "yarn test --ci",
+    "test:watch": "jest --watch",
+    "prepare": "husky install",
+    "commit": "cz",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "deploy-storybook": "storybook-to-ghpages",
+    "release": "yarn build && yarn release-it"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "treeshake": true,
+    "sourcemap": "inline",
+    "minify": true,
+    "clean": true,
+    "dts": true,
+    "splitting": false,
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "external": [
+      "react"
+    ]
+  },
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "files": [
     "dist"
   ],
-  "scripts": {
-    "check": "run-p lint typecheck",
-    "clean": "rimraf dist coverage",
-    "build": "run-p build:cjs build:es build:lib",
-    "build:cjs": "cross-env BUILD_TYPE=cjs run-p build:cjs:*",
-    "build:cjs:files": "babel -x .ts,.tsx,.js,.jsx src --out-dir dist/cjs --ignore \"**/*.d.ts\" --copy-files",
-    "build:cjs:dts": "tsc -p tsconfig.prod.json --emitDeclarationOnly --outDir dist/cjs",
-    "build:es": "run-p build:es:*",
-    "build:es:files": "babel -x .ts,.tsx,.js,.jsx src --out-dir dist/es --ignore \"**/*.d.ts\" --copy-files",
-    "build:es:dts": "tsc -p tsconfig.prod.json --emitDeclarationOnly --outDir dist/es",
-    "build:lib": "cross-env BUILD_TYPE=lib run-p build:lib:*",
-    "build:lib:files": "babel -x .ts,.tsx,.js,.jsx src --out-dir dist/lib --ignore \"**/*.d.ts\" --copy-files",
-    "build:lib:dts": "tsc -p tsconfig.prod.json --emitDeclarationOnly --outDir dist/lib",
-    "full-prepare": "run-s clean check test:coverage build",
-    "lint": "eslint \"+(.storybook|__stories__|__tests__|config|src)/**/*.{ts,js}\"",
-    "precommit": "lint-staged",
-    "start": "run-s storybook",
-    "storybook:dev": "start-storybook -p 6006",
-    "storybook:build": "build-storybook -c .storybook -o docs",
-    "test": "cross-env NODE_ENV=test jest",
-    "test:coverage": "npm run test -- --coverage",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+  "lint-staged": {
+    "./{src,tests}/**/*.{ts,js,jsx,tsx}": [
+      "eslint --ignore-path .gitignore --fix"
+    ],
+    "*": "prettier --write"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Lodin/react-vtree.git"
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@ryansonshine/cz-conventional-changelog"
+    }
   },
-  "keywords": [
-    "infinite",
-    "react",
-    "reactjs",
-    "react-component",
-    "react-virtualized",
-    "tree",
-    "virtual",
-    "virtualized"
-  ],
-  "author": "Vlad Rindevich <rindevich.vs@gmail.com> (https://github.com/Lodin)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Lodin/react-vtree/issues"
+  "release-it": {
+    "git": {
+      "commitMessage": "chore(release): v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    }
   },
-  "homepage": "https://github.com/Lodin/react-vtree#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.0",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
-    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
-    "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/preset-react": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@storybook/addon-knobs": "^5.3.19",
-    "@storybook/addon-options": "^5.3.19",
-    "@storybook/react": "^5.3.19",
-    "@types/classnames": "^2.2.10",
-    "@types/enzyme": "^3.10.5",
-    "@types/jest": "^26.0.8",
-    "@types/react": "^16.9.44",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-virtualized-auto-sizer": "^1.0.0",
-    "@types/react-window": "^1.8.2",
-    "babel-jest": "^26.2.2",
-    "babel-loader": "^8.1.0",
-    "cross-env": "^7.0.2",
-    "cssnano": "^4.1.10",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "eslint": "^7.6.0",
-    "eslint-config-poetez": "^1.0.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.2.5",
-    "jest": "^26.2.2",
-    "jest-enzyme": "^7.1.2",
-    "lint-staged": "^10.2.11",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.0.5",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-virtualized-auto-sizer": "^1.0.2",
-    "react-window": "^1.8.5",
-    "rimraf": "^3.0.2",
-    "typescript": "^3.9.7",
-    "webpack": "^4.44.1"
+    "@babel/core": "7.21.8",
+    "@babel/preset-env": "7.21.5",
+    "@babel/preset-react": "7.18.6",
+    "@babel/preset-typescript": "7.21.5",
+    "@commitlint/cli": "17.6.1",
+    "@commitlint/config-conventional": "17.6.1",
+    "@ryansonshine/commitizen": "4.2.8",
+    "@ryansonshine/cz-conventional-changelog": "3.3.4",
+    "@storybook/addon-essentials": "7.0.8",
+    "@storybook/addon-interactions": "7.0.8",
+    "@storybook/addon-links": "7.0.8",
+    "@storybook/blocks": "7.0.8",
+    "@storybook/react": "7.0.8",
+    "@storybook/react-webpack5": "7.0.8",
+    "@storybook/storybook-deployer": "2.8.16",
+    "@storybook/testing-library": "0.1.0",
+    "@types/jest": "29.5.1",
+    "@types/node": "18.16.3",
+    "@types/react": "18.2.2",
+    "@types/react-dom": "18.2.3",
+    "@types/react-test-renderer": "18.0.0",
+    "@typescript-eslint/eslint-plugin": "5.59.2",
+    "@typescript-eslint/parser": "5.59.2",
+    "babel-loader": "9.1.2",
+    "concurrently": "8.0.1",
+    "eslint": "^8.39.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-prefer-arrow": "1.2.3",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-storybook": "0.6.12",
+    "eslint-plugin-typescript-sort-keys": "2.3.0",
+    "eslint-plugin-unused-imports": "2.0.0",
+    "husky": "8.0.3",
+    "jest": "29.5.0",
+    "lint-staged": "13.2.2",
+    "prettier": "2.8.8",
+    "prop-types": "15.8.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-test-renderer": "18.2.0",
+    "release-it": "15.10.3",
+    "storybook": "7.0.8",
+    "ts-jest": "29.1.0",
+    "tsup": "6.7.0",
+    "typescript": "5.0.4",
+    "yalc": "1.0.0-pre.53"
   },
   "peerDependencies": {
-    "react": ">= 16.8",
-    "react-dom": ">= 16.8",
-    "react-window": ">= 1.8.5"
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "resolutions": {
+    "glob-parent": ">=5.1.2",
+    "parse-url": ">=8.1.0",
+    "trim": ">=0.0.3",
+    "trim-newlines": ">=3.0.1",
+    "yaml": ">=2.2.2"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.0",
-    "react-merge-refs": "^1.1.0"
+    "@types/react-window": "^1.8.5",
+    "react-virtualized-auto-sizer": "^1.0.15",
+    "react-window": "^1.8.9"
   }
 }

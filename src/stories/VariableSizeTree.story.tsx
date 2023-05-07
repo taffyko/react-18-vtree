@@ -1,7 +1,6 @@
 /* eslint-disable max-depth */
-import {number, withKnobs} from '@storybook/addon-knobs';
-import {storiesOf} from '@storybook/react';
-import React, {FC, useCallback, useEffect, useRef} from 'react';
+import { storiesOf } from '@storybook/react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
   TreeWalker,
@@ -9,16 +8,12 @@ import {
   VariableSizeNodeData,
   VariableSizeNodePublicState,
   VariableSizeTree,
-} from '../src';
-import {NodeComponentProps} from '../src/Tree';
+} from '..';
+import { NodeComponentProps } from '../Tree';
 
 document.body.style.margin = '0';
 document.body.style.display = 'flex';
 document.body.style.minHeight = '100vh';
-
-const root = document.getElementById('root')!;
-root.style.margin = '10px 0 0 10px';
-root.style.flex = '1';
 
 type TreeNode = Readonly<{
   children: TreeNode[];
@@ -61,15 +56,14 @@ const createNode = (depth: number = 0) => {
 };
 
 const rootNode = createNode();
-const defaultGapStyle = {marginLeft: 10};
-const defaultButtonStyle = {fontFamily: 'Courier New'};
+const defaultGapStyle = { marginLeft: 10 };
+const defaultButtonStyle = { fontFamily: 'Courier New' };
 
-const Node: FC<NodeComponentProps<
-  ExtendedData,
-  VariableSizeNodePublicState<ExtendedData>
->> = ({
+const Node: FC<
+  NodeComponentProps<ExtendedData, VariableSizeNodePublicState<ExtendedData>>
+> = ({
   height,
-  data: {isLeaf, name, nestingLevel},
+  data: { isLeaf, name, nestingLevel },
   isOpen,
   resize,
   style,
@@ -81,7 +75,7 @@ const Node: FC<NodeComponentProps<
 
   const toggleNodeSize = useCallback(
     () => resize(canOpen ? height + halfSize : height - halfSize, true),
-    [height, resize],
+    [height, resize]
   );
 
   return (
@@ -122,7 +116,7 @@ type TreePresenterProps = Readonly<{
 const getNodeData = (
   node: TreeNode,
   nestingLevel: number,
-  itemSize: number,
+  itemSize: number
 ): TreeWalkerValue<ExtendedData, NodeMeta> => ({
   data: {
     defaultHeight: itemSize,
@@ -136,7 +130,7 @@ const getNodeData = (
   node,
 });
 
-const TreePresenter: FC<TreePresenterProps> = ({itemSize}) => {
+const TreePresenter: FC<TreePresenterProps> = ({ itemSize }) => {
   const tree = useRef<VariableSizeTree<ExtendedData>>(null);
 
   const treeWalker = useCallback(
@@ -152,12 +146,12 @@ const TreePresenter: FC<TreePresenterProps> = ({itemSize}) => {
           yield getNodeData(
             parentMeta.node.children[i],
             parentMeta.nestingLevel + 1,
-            itemSize,
+            itemSize
           );
         }
       }
     },
-    [itemSize],
+    [itemSize]
   );
 
   useEffect(() => {
@@ -170,7 +164,7 @@ const TreePresenter: FC<TreePresenterProps> = ({itemSize}) => {
 
   return (
     <AutoSizer disableWidth>
-      {({height}) => (
+      {({ height }) => (
         <VariableSizeTree
           ref={tree}
           itemData={itemSize}
@@ -185,8 +179,6 @@ const TreePresenter: FC<TreePresenterProps> = ({itemSize}) => {
   );
 };
 
-storiesOf('Tree', module)
-  .addDecorator(withKnobs)
-  .add('VariableSizeTree', () => (
-    <TreePresenter itemSize={number('Default row height', 30)} />
-  ));
+storiesOf('Tree', module).add('VariableSizeTree', () => (
+  <TreePresenter itemSize={30} />
+));

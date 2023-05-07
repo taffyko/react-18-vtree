@@ -1,4 +1,5 @@
-import {FixedSizeList} from 'react-window';
+import { FixedSizeList } from 'react-window';
+import React from 'react';
 import type {
   NodeData,
   NodePublicState,
@@ -23,20 +24,6 @@ export type RequestIdleCallbackDeadline = Readonly<{
   didTimeout: boolean;
   timeRemaining: () => number;
 }>;
-
-declare global {
-  const requestIdleCallback: (
-    callback: (deadline: RequestIdleCallbackDeadline) => void,
-    opts?: RequestIdleCallbackOptions,
-  ) => RequestIdleCallbackHandle;
-  const cancelIdleCallback: (handle: RequestIdleCallbackHandle) => void;
-
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface Window {
-    requestIdleCallback: typeof requestIdleCallback;
-    cancelIdleCallback: typeof cancelIdleCallback;
-  }
-}
 
 export type DefaultTreeProps = TreeProps<
   NodeData,
@@ -66,7 +53,7 @@ export const createBasicRecord = <
   TNodePublicState extends NodePublicState<TData>
 >(
   pub: TNodePublicState,
-  parent: NodeRecord<TNodePublicState> | null = null,
+  parent: NodeRecord<TNodePublicState> | null = null
 ): NodeRecord<TNodePublicState> => ({
   child: null,
   isShown: parent ? parent.public.isOpen && parent.isShown : true,
@@ -81,11 +68,26 @@ export const getIdByIndex = <
   TNodePublicState extends NodePublicState<TData>
 >(
   index: number,
-  {getRecordData}: TypedListChildComponentData<TData, TNodePublicState>,
+  { getRecordData }: TypedListChildComponentData<TData, TNodePublicState>
 ): string => {
   const {
-    data: {id},
+    data: { id },
   } = getRecordData(index);
 
   return id;
 };
+
+export const mergeRefs =
+  <T>(
+    refs: Array<React.MutableRefObject<T> | React.LegacyRef<T>>
+  ): React.RefCallback<T> =>
+  (value) => {
+    refs.forEach((ref) => {
+      if (typeof ref === 'function') {
+        ref(value);
+      } else if (ref != null) {
+        // eslint-disable-next-line no-param-reassign
+        (ref as React.MutableRefObject<T | null>).current = value;
+      }
+    });
+  };

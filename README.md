@@ -1,4 +1,11 @@
-# react-vtree
+# react-18-vtree
+
+# Forked from https://github.com/Lodin/react-vtree by https://github.com/Lodin in order to add React 18 support.
+
+Plan for changes:
+
+- Rewrite tests to Testing Framework
+- Minimal dependency
 
 [![Latest Stable Version](https://img.shields.io/npm/v/react-vtree.svg)](https://www.npmjs.com/package/react-vtree)
 [![License](https://img.shields.io/npm/l/react-vtree.svg)](./LICENSE)
@@ -35,7 +42,7 @@ You can also take a look at the very similar example at the Storybook:
 - [Demo](https://lodin.github.io/react-vtree/index.html?path=/story/tree--fixedsizetree)
 
 ```js
-import {FixedSizeTree as Tree} from 'react-vtree';
+import { FixedSizeTree as Tree } from 'react-vtree';
 
 // Tree component can work with any possible tree structure because it uses an
 // iterator function that the user provides. Structure, approach, and iterator
@@ -47,14 +54,14 @@ const treeNodes = [
     children: [
       {
         children: [
-          {id: 'child-2', name: 'Child #2'},
-          {id: 'child-3', name: 'Child #3'},
+          { id: 'child-2', name: 'Child #2' },
+          { id: 'child-3', name: 'Child #3' },
         ],
         id: 'child-1',
         name: 'Child #1',
       },
       {
-        children: [{id: 'child-5', name: 'Child #5'}],
+        children: [{ id: 'child-5', name: 'Child #5' }],
         id: 'child-4',
         name: 'Child #4',
       },
@@ -106,7 +113,7 @@ function* treeWalker() {
 // Node component receives all the data we created in the `treeWalker` +
 // internal openness state (`isOpen`), function to change internal openness
 // state (`setOpen`) and `style` parameter that should be added to the root div.
-const Node = ({data: {isLeaf, name}, isOpen, style, setOpen}) => (
+const Node = ({ data: { isLeaf, name }, isOpen, style, setOpen }) => (
   <div style={style}>
     {!isLeaf && (
       <button type="button" onClick={() => setOpen(!isOpen)}>
@@ -121,7 +128,7 @@ ReactDOM.render(
   <Tree treeWalker={treeWalker} itemSize={30} height={150} width={300}>
     {Node}
   </Tree>,
-  document.querySelector('#root'),
+  document.querySelector('#root')
 );
 ```
 
@@ -259,14 +266,14 @@ const tree = {
   children: [
     {
       children: [
-        {id: 'child-2', name: 'Child #2'},
-        {id: 'child-3', name: 'Child #3'},
+        { id: 'child-2', name: 'Child #2' },
+        { id: 'child-3', name: 'Child #3' },
       ],
       id: 'child-1',
       name: 'Child #1',
     },
     {
-      children: [{id: 'child-5', name: 'Child #5'}],
+      children: [{ id: 'child-5', name: 'Child #5' }],
       id: 'child-4',
       name: 'Child #4',
     },
@@ -315,7 +322,7 @@ You can also take a look at the very similar example at the Storybook:
 - [Demo](https://lodin.github.io/react-vtree/index.html?path=/story/tree--variablesizetree)
 
 ```javascript
-import {VariableSizeTree as Tree} from 'react-vtree';
+import { VariableSizeTree as Tree } from 'react-vtree';
 
 // Tree component can work with any possible tree structure because it uses an
 // iterator function that the user provides. Structure, approach, and iterator
@@ -326,14 +333,14 @@ const tree = {
   children: [
     {
       children: [
-        {id: 'child-2', name: 'Child #2'},
-        {id: 'child-3', name: 'Child #3'},
+        { id: 'child-2', name: 'Child #2' },
+        { id: 'child-3', name: 'Child #3' },
       ],
       id: 'child-1',
       name: 'Child #1',
     },
     {
-      children: [{id: 'child-5', name: 'Child #5'}],
+      children: [{ id: 'child-5', name: 'Child #5' }],
       id: 'child-4',
       name: 'Child #4',
     },
@@ -377,7 +384,7 @@ function* treeWalker() {
 }
 
 // Node component receives current node height as a prop
-const Node = ({data: {isLeaf, name}, height, isOpen, style, setOpen}) => (
+const Node = ({ data: { isLeaf, name }, height, isOpen, style, setOpen }) => (
   <div style={style}>
     {!isLeaf && (
       <button type="button" onClick={() => setOpen(!isOpen)}>
@@ -512,7 +519,7 @@ function* treeWalker(refresh) {
   // Go through all the nodes adding children to the stack and removing them
   // when they are processed.
   while (stack.length !== 0) {
-    const {node, nestingLevel} = stack.pop();
+    const { node, nestingLevel } = stack.pop();
     const id = node.id.toString();
 
     // Receive the openness state of the node we are working with
@@ -571,7 +578,7 @@ function* treeWalker() {
     for (let i = 0; i < parentMeta.node.children.length; i++) {
       yield getNodeData(
         parentMeta.node.children[i],
-        parentMeta.nestingLevel + 1,
+        parentMeta.nestingLevel + 1
       );
     }
   }
@@ -630,7 +637,7 @@ In the `3.x.x` version node provides a `setOpen` function instead of `toggle` th
 Old `toggle`:
 
 ```javascript
-const Node = ({data: {isLeaf, name}, isOpen, style, toggle}) => (
+const Node = ({ data: { isLeaf, name }, isOpen, style, toggle }) => (
   <div style={style}>
     {!isLeaf && (
       <div>
@@ -643,8 +650,9 @@ const Node = ({data: {isLeaf, name}, isOpen, style, toggle}) => (
 ```
 
 New `setOpen`:
+
 ```javascript
-const Node = ({data: {isLeaf, name}, isOpen, style, setOpen}) => (
+const Node = ({ data: { isLeaf, name }, isOpen, style, setOpen }) => (
   <div style={style}>
     {!isLeaf && (
       <div>

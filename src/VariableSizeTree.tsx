@@ -1,5 +1,5 @@
-import React, {ReactNode} from 'react';
-import {VariableSizeList, VariableSizeListProps} from 'react-window';
+import React, { ReactNode } from 'react';
+import { VariableSizeList, VariableSizeListProps } from 'react-window';
 import Tree, {
   createTreeComputer,
   NodeData,
@@ -8,7 +8,7 @@ import Tree, {
   TreeProps,
   TreeState,
 } from './Tree';
-import {createBasicRecord, getIdByIndex} from './utils';
+import { createBasicRecord, getIdByIndex } from './utils';
 
 export type VariableSizeNodeData = Readonly<{
   /** Default node height. Can be used only with VariableSizeTree */
@@ -16,19 +16,17 @@ export type VariableSizeNodeData = Readonly<{
 }> &
   NodeData;
 
-export type VariableSizeNodePublicState<
-  T extends VariableSizeNodeData
-> = NodePublicState<T> & {
-  height: number;
-  readonly resize: (height: number, shouldForceUpdate?: boolean) => void;
-};
+export type VariableSizeNodePublicState<T extends VariableSizeNodeData> =
+  NodePublicState<T> & {
+    height: number;
+    readonly resize: (height: number, shouldForceUpdate?: boolean) => void;
+  };
 
-export type VariableSizeTreeProps<
-  TData extends VariableSizeNodeData
-> = TreeProps<TData, VariableSizeNodePublicState<TData>, VariableSizeList> &
-  Readonly<{
-    itemSize?: VariableSizeListProps['itemSize'];
-  }>;
+export type VariableSizeTreeProps<TData extends VariableSizeNodeData> =
+  TreeProps<TData, VariableSizeNodePublicState<TData>, VariableSizeList> &
+    Readonly<{
+      itemSize?: VariableSizeListProps['itemSize'];
+    }>;
 
 export type VariableSizeTreeState<T extends VariableSizeNodeData> = TreeState<
   T,
@@ -47,9 +45,9 @@ const computeTree = createTreeComputer<
 >({
   createRecord: (
     data,
-    {recomputeTree, resetAfterId},
+    { recomputeTree, resetAfterId },
     parent,
-    previousRecord,
+    previousRecord
   ) => {
     const record = createBasicRecord(
       {
@@ -69,7 +67,7 @@ const computeTree = createTreeComputer<
             [data.id]: state,
           }),
       },
-      parent,
+      parent
     );
 
     return record;
@@ -94,12 +92,12 @@ export class VariableSizeTree<TData extends VariableSizeNodeData> extends Tree<
   }
 
   public resetAfterId(id: string, shouldForceUpdate: boolean = false): void {
-    const {list, order} = this.state;
+    const { list, order } = this.state;
     list.current?.resetAfterIndex(order!.indexOf(id), shouldForceUpdate);
   }
 
   public recomputeTree(
-    state: OpennessState<TData, VariableSizeNodePublicState<TData>>,
+    state: OpennessState<TData, VariableSizeNodePublicState<TData>>
   ): Promise<void> {
     return super.recomputeTree(state).then(() => {
       this.state.list.current?.resetAfterIndex(0, true);
@@ -107,15 +105,8 @@ export class VariableSizeTree<TData extends VariableSizeNodeData> extends Tree<
   }
 
   public render(): ReactNode {
-    const {
-      children,
-      placeholder,
-      itemSize,
-      rowComponent,
-      treeWalker,
-      ...rest
-    } = this.props;
-    const {attachRefs, order} = this.state;
+    const { placeholder, itemSize, rowComponent, ...rest } = this.props;
+    const { attachRefs, order } = this.state;
 
     return placeholder && order!.length === 0 ? (
       placeholder
